@@ -82,10 +82,8 @@ private:
 
 public:
     CartItem(const Product& product, int quantity)
-    {
-    this->product = product;
-    this->quantity = quantity;
-    }
+    : product(product), quantity(quantity) {}
+
 
     const Product& getProduct() const { return product; }
     int getQuantity() const { return quantity; }
@@ -153,13 +151,12 @@ public:
 class ShoppingCart {
 private:
     vector<CartItem> items;
-    const double shippingFee; //demo
+    double shippingFee; 
 
 public:
     void addItem(const Product& product, int quantity) {
         if (quantity <= 0 || quantity > product.getStock()) {
-            cout<<"Error: Invalid quantity for "<<product.getName()<<endl;
-            return;
+            cout<<"Invalid quantity for "<<product.getName()<<endl;return;
         }
         items.emplace_back(product, quantity);
     }
@@ -169,8 +166,7 @@ public:
 
     void checkout(Customer& customer) {
         if (items.empty()) {
-            cout<<"Error: Your cart is empty"<<endl;
-            return;
+            cout<<"Your cart is empty , Start Shopping"<<endl;return;
         }
 
         double subtotal = 0;
@@ -179,12 +175,10 @@ public:
 
         for (const CartItem& item : items) {
             if (item.isExpired()) {
-                cout<<"Error: "<<item.getProduct().getName()<<" is expired"<<endl;
-                return;
+                cout<<"Error: "<<item.getProduct().getName()<<" is expired"<<endl;return;
             }
             if (item.getQuantity() > item.getProduct().getStock()) {
-                cout<<"Error: Not enough stock for "<<item.getProduct().getName()<<endl;
-                return;
+                cout<<"There is only "<<item.getProduct().getStock() << " for " <<item.getProduct().getName()<<endl;return;
             }
             subtotal += item.getTotalPrice();
 
@@ -225,11 +219,13 @@ int main() {
 
     Product cheese("Cheese", 100, 10, true, true, future, 0.2);
     Product biscuits("Biscuits", 150, 5, true, true, future, 0.7);
-    Product tv("TV", 3000, 2, false, true, 0, 10.0);
     Product scratchCard("Mobile Card", 50, 20);
+    Product tv("TV", 3000, 2, false, true, 0, 10.0);
 
-    Customer customer("Ali", 4000);
-
+    Customer customer("Mohamed", 4500);
+    
+    cout<<endl;
+    
     ShoppingCart cart;
     cart.addShippingFee(50); // demo shipping fee
 
@@ -239,6 +235,5 @@ int main() {
     cart.addItem(scratchCard, 3);
 
     cart.checkout(customer);
-
     return 0;
 }
